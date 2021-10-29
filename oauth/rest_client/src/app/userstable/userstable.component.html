@@ -1,0 +1,33 @@
+<div class="col">
+  <a [href]="'admin/create'"><button type="button" class="btn btn-primary">Create</button></a>
+  <table class="table table-dark">
+    <thead>
+    <tr>
+      <th scope="col">Login</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Age</th>
+      <th scope="col">Role</th>
+      <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{user.login}}</td>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.email}}</td>
+      <td>{{user.age}}</td>
+      <td>{{user.role}}</td>
+      <td>
+        <a [href]="'admin/edit/' + user.login"><button type="button" *ngIf="user.role !== 'SuperAdmin'" class="btn btn-link">Update</button></a>
+        <button type="button" *ngIf="user.role !== 'SuperAdmin'" class="btn btn-link" (click)="removeUser(user.login)">Delete</button>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+

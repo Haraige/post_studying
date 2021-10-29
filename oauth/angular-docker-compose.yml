@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  kharakhaichuk-ivan-rest-client:
+    image: 'kharakhaichuk-ivan-rest-client:latest'
+    ports:
+      - "127.0.0.1:9100:8090"
+    build:
+      context: rest_client
+    container_name: kharakhaichuk-ivan-rest-client

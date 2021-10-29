@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  kharakhaichuk-ivan-rest-service:
+    image: 'kharakhaichuk-ivan-keycloak-rest-service:latest'
+    ports:
+      - "9000:8080"
+    depends_on:
+      - kharakhaichuk-ivan-db
+    build:
+      context: rest_service
+    container_name: kharakhaichuk-ivan-rest-service
+
+  kharakhaichuk-ivan-rest-client:
+    image: 'kharakhaichuk-ivan-rest-client:latest'
+    ports:
+      - "9100:8090"
+    depends_on:
+      - kharakhaichuk-ivan-rest-service
+    build:
+      context: rest_client
+    container_name: kharakhaichuk-ivan-rest-client
+
+  kharakhaichuk-ivan-db:
+    image: 'buildo/h2database'
+    ports:
+      - "8082:8084"
+    volumes:
+      - ./docker/db:/docker-entrypoint-initdb.d
+    container_name: kharakhaichuk-ivan-db
+
+  kharakhaichuk-ivan-keycloak:
+    image: 'jboss/keycloak:latest'
+    hostname: kharakhaichuk-ivan-keycloak
+    ports:
+      - "8443:8443"
+      - "8080:8080"
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: password
+      KEYCLOAK_HTTPS_PORT: 8443
+      KEYCLOAK_HTTP_PORT: 8080
+      KEYCLOAK_FRONTEND_URL: http://localhost:8080/auth
+      DB_VENDOR: h2
+      DB_USER: admin
+      DB_PASSWORD: admin
+      KEYCLOAK_IMPORT: "/tmp/realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled"
+    volumes:
+      - ./keycloak/realms/realm-export.json:/tmp/realm-export.json
+      - ./keycloak/cert/cert.crt:/etc/x509/https/tls.crt
+      - ./keycloak/cert/cert.key:/etc/x509/https/tls.key
+      - ./keycloak/cert/cert.crt:/usr/local/share/ca-certificates/cert.crt
+    container_name: kharakhaichuk-ivan-keycloak

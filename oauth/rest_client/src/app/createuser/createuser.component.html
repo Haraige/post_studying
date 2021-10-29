@@ -1,0 +1,139 @@
+<div class="col">
+  <h1 class="display-3">{{operationType}} User</h1>
+  <hr>
+  <form method="POST" #userForm="ngForm" (ngSubmit)="createOrUpdateUser(userForm)" novalidate>
+    <div class="form-floating mb-3">
+      <input type="text" #login='ngModel' name="login" id="user_login" class="form-control" minlength="2"
+             [(ngModel)]="formUser!.login" [ngClass]="{'is-invalid': login.invalid && login.touched, 'is-valid': login.valid}" [readOnly]="operationType === 'Edit'" required/>
+      <label for="user_login" class="form-label">Login</label>
+      <div class="invalid-feedback">
+        <div *ngIf="login.errors?.required">
+          Login cannot be blank
+        </div>
+        <div *ngIf="login.errors?.minlength">
+          Login must be at least 2 symbols
+        </div>
+        <div *ngIf="login.errors?.message">
+          {{login.errors?.message}}
+        </div>
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password" #password="ngModel" name="password" id="user_password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+             [(ngModel)]="formUser!.password"
+             [ngClass]="{'is-invalid': password.invalid && password.touched, 'is-valid': password.valid && password.touched}"
+             [required]="operationType === 'Create'"/>
+      <label for="user_password" class="form-label">Password</label>
+      <div class="invalid-feedback">
+        <div *ngIf="password.errors?.required">
+          Password cannot be blank
+        </div>
+        <div *ngIf="password.errors?.pattern">
+          Minimum eight characters, at least one uppercase letter, one lowercase letter and one number
+        </div>
+        <div *ngIf="password.errors?.message">
+          {{password.errors?.message}}
+        </div>
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password" #repeatPassword="ngModel" name="repeatPassword" id="user_repeat_password" class="form-control"
+             [(ngModel)]="formUser!.repeatPassword"
+             [ngClass]="{'is-invalid': repeatPassword.invalid && repeatPassword.touched, 'is-valid': repeatPassword.valid && repeatPassword.touched}"
+             pattern="^{{password.control.value}}$" [required]="operationType === 'Create'"/>
+      <label for="user_repeat_password" class="form-label">Password again</label>
+      <div class="invalid-feedback">
+        <div *ngIf="repeatPassword.errors?.required">
+          Field cannot be blank
+        </div>
+        <div *ngIf="repeatPassword.errors?.pattern">
+          Password should be the same
+        </div>
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="email" #email="ngModel" name="email" id="user_email" class="form-control"
+             [(ngModel)]="formUser!.email" [ngClass]="{'is-invalid': email.invalid && repeatPassword.touched, 'is-valid': email.valid}" email required />
+      <label for="user_email" class="form-label">Email</label>
+      <div class="invalid-feedback">
+        <div class="invalid-feedback">
+          <div *ngIf="email.errors?.required">
+            Email cannot be blank
+          </div>
+          <div *ngIf="email.errors?.email">
+            Enter valid email
+          </div>
+          <div *ngIf="email.errors?.message">
+            {{email.errors?.message}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text" #firstName="ngModel" name="firstName" id="user_first_name" class="form-control"
+             [(ngModel)]="formUser!.firstName" minlength="2" [ngClass]="{'is-invalid': firstName.invalid && firstName.touched, 'is-valid': firstName.valid}" required />
+      <label for="user_first_name" class="form-label">First Name</label>
+      <div class="invalid-feedback">
+        <div *ngIf="firstName.errors?.required">
+          First name cannot be blank
+        </div>
+        <div *ngIf="firstName.errors?.minlength">
+          First name must be at least 2 symbols
+        </div>
+        <div *ngIf="firstName.errors?.message">
+          {{firstName.errors?.message}}
+        </div>
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" #lastName="ngModel" name="lastName" id="user_last_name" class="form-control"
+             [(ngModel)]="formUser!.lastName" [ngClass]="{'is-invalid': lastName.invalid && lastName.touched, 'is-valid': lastName.valid}" minlength="2" required />
+      <label for="user_last_name" class="form-label">Last Name</label>
+      <div class="invalid-feedback">
+        <div *ngIf="lastName.errors?.required">
+          Last name cannot be blank
+        </div>
+        <div *ngIf="lastName.errors?.minlength">
+          Last name must be at least 2 symbols
+        </div>
+        <div *ngIf="lastName.errors?.message">
+          {{lastName.errors?.message}}
+        </div>
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="date" #birthday="ngModel" name="birthday" id="user_birthday" class="form-control"
+             [(ngModel)]="formUser!.birthday"
+             [ngClass]="{'is-invalid': birthday.invalid && birthday, 'is-valid': birthday.valid && birthday}"/>
+      <label for="user_birthday" class="form-label">Birthday</label>
+      <div class="invalid-feedback">
+        <div *ngIf="birthday.errors?.required">
+          Invalid date
+        </div>
+        <div *ngIf="birthday.errors?.message">
+          {{birthday.errors?.message}}
+        </div>
+      </div>
+    </div>
+    <div class="form-floating mb-3" *ngIf="foundedUser?.role !== 'Admin'">
+      <select class="form-control" name="role" #role="ngModel" id="user_roles" size="1"
+              [(ngModel)]="formUser!.role"
+              [ngClass]="{'is-invalid': role.invalid && role.touched, 'is-valid': role.valid}"
+              required>
+        <option hidden selected disabled value=""></option>
+        <option *ngFor="let role of roles" [selected]="role.name === formUser!.role" [hidden]="role.name === 'SuperAdmin'" [innerHTML]="role.name"></option>
+      </select>
+      <label for="user_roles" class="form-label">Role</label>
+      <div class="invalid-feedback">
+        <div *ngIf="birthday.errors?.required">
+          Role cannot be blank
+        </div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">{{operationType}}</button>
+    </div>
+  </form>
+</div>
+

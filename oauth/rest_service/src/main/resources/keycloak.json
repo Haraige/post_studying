@@ -1,0 +1,12 @@
+{
+  "realm": "auth-service",
+  "auth-server-url": "http://kharakhaichuk-ivan-keycloak:8080/auth",
+  "ssl-required": "external",
+  "resource": "user-managing",
+  "bearer-only": true,
+  "public-client": true,
+  "enable-cors": true,
+  "credentials": {
+    "secret": "1db1e08b-69a5-4ffa-be68-512e9128e905"
+  }
+}
